@@ -9,10 +9,10 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"service"})//, "service.controller", "service.Serializing", "service.security", "repository.validation"})
+@ComponentScan(basePackages = {"service", "service.controller", "repository.validation"}) //"service.Serializing", "service.security", })
 @EnableJpaRepositories({"repository"})
 @PropertySource("classpath:application.properties")
-//@EntityScan({"repository.dao"})
+@EntityScan({"repository.dao"})
 @Configuration
 public class Start {
     public static void main(String[] args) {
