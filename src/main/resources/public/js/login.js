@@ -28,6 +28,7 @@ function login() {
                 },
                 error: function(response) //Fehlerfall
                 {
+                    console.log(response);
                     var jsonAsObject = JSON.parse(response.responseText);
                     var ul = document.getElementById("errors");
                     ul.innerHTML = "<li>" + jsonAsObject.fehlermeldung + "</li>";

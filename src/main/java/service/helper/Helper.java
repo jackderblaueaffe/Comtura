@@ -4,6 +4,7 @@ import repository.TokenRepository;
 import repository.dao.Benutzer;
 import repository.dao.Token;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Helper {
@@ -21,19 +22,30 @@ public class Helper {
 
     public static boolean isTokenValid(TokenRepository tokenRepository, String tokenContent) {
         Benutzer benutzer = getBenutzerByTokenContent(tokenRepository, tokenContent);
-        if(benutzer != null && benutzer.getToken().getAblaufdatum() > new Date().getTime()) {
-            return true;
-        } else {
-            return false;
-        }
+        return benutzer != null && benutzer.getToken().getAblaufdatum() > new Date().getTime();
     }
 
     public static boolean checkPasswortPolicy(String passwort) {
         //Mindestens 5 Zeichen
-        if(passwort.length() >= 5) {
-            return true;
-        }
-        return false;
+        return passwort.length() >= 5;
+    }
+
+    public static String convertDateFromLongToZeitpunktString(long zeitstempel) {
+        Date datum = new Date(zeitstempel);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        return sdf.format(datum);
+    }
+
+    public static String convertDateFromLongToZeitString(long zeitstempel) {
+        Date datum = new Date(zeitstempel);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        return sdf.format(datum);
+    }
+
+    public static String convertDateFromLongToDatumString(long zeitstempel) {
+        Date datum = new Date(zeitstempel);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        return sdf.format(datum);
     }
 
 }

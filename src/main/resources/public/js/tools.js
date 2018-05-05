@@ -4,6 +4,11 @@ function setCookie(tokenContent, expires)
     document.cookie = 'token=' + tokenContent + ';expires=' + expireDate;
 }
 
+function setCookieWithName(name, tokenContent, expires) {
+    var expireDate = new Date(expires);
+    document.cookie = name + '=' + tokenContent + ';expires=' + expireDate;
+}
+
 function getCookieByName(name)
 {
     var nameEQ = name + "=";
