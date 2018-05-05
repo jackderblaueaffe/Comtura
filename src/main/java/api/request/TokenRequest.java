@@ -15,5 +15,5 @@ import javax.validation.constraints.Size;
 public class TokenRequest {
 
     @NotNull(message = "Token ist leer.")
-    private String userToken;
+    private String token;
 }

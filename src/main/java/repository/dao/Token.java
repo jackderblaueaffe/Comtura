@@ -28,7 +28,8 @@ public class Token implements Serializable {
     @NotNull(message = "Das Ablaufdatum des Tokens ist nicht gesetzt.")
     private long ablaufdatum;
 
-    //TODO: Schlüssel für Verschlüsselung?
+    @NotNull(message = "Der Token benoetigt einen Schlüssel.")
+    private byte[] encryptionKey;
 
     //Beziehung zu Benutzer
     @OneToOne(fetch=FetchType.EAGER)

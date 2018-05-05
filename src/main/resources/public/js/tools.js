@@ -31,46 +31,46 @@ function displayErrorMessages (response)
     {
         error.innerHTML += "<ul>" + errorMessages[i] + "</ul>";
     }
+    error.classList.add("alert-danger");
 }
 
 function abmelden() //entweder onClick beim HTML-Button, der diese Funktion aufruft, oder https://api.jquery.com/click/ oder logout beim Backend aufrufen
 {
     $.ajax({
         type: 'POST',
-        url: 'http://localhost:8080/service/user/logout',
+        url: domain + '/service/login/logout',
         contentType: "application/json;charset=utf-8",
         data:
         "{" +
-        "\"userToken\":\"" + getCookieByName('token') + "\"" +
+        "\"token\":\"" + getCookieByName('token') + "\"" +
         "}",
         success: function (jsonVomServer) {
-            window.location = "http://localhost:8080/index.html";
+            window.location = domain + "/index.html";
             deleteCookie('token');
         },
         error: function (response) //Fehlerfall
         {
-            swal({
-                title: "Es gab einen Fehler beim Abmelden!",
-                type: "error"
-            })
+            console.log("Es gab einen Fehler beim Abmelden!");
+            window.location = domain + "/index.html";
+            deleteCookie('token');
         }
     });
 }
 
 function autologin() {
-    var userToken = getCookieByName('token');
-    if (userToken != null) {
+    var token = getCookieByName('token');
+    if (token != null) {
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:8080/service/token/isTokenValid',
+            url: domain + '/service/token/isTokenValid',
             contentType: "application/json;charset=utf-8",
             data:
             "{" +
-            "\"userToken\":\"" + userToken + "\"" +
+            "\"token\":\"" + token + "\"" +
             "}",
             success: function (jsonVomServer)
             {
-                window.location = "http://localhost:8080/app/";
+                window.location = domain + "/app/index.html";
             },
             error: function (response)
             {
@@ -83,11 +83,11 @@ function autologoff() {
     var userToken = getCookieByName('token');
     $.ajax({
         type: 'POST',
-        url: 'http://localhost:8080/service/user/verifyToken',
+        url: domain + '/service/token/isTokenValid',
         contentType: "application/json;charset=utf-8",
         data:
         "{" +
-        "\"userToken\":\"" + userToken + "\"" +
+        "\"token\":\"" + userToken + "\"" +
         "}",
         success: function (jsonVomServer)
         {
@@ -95,7 +95,7 @@ function autologoff() {
         error: function (response)
         {
             deleteCookie('token');
-            window.location = "http://localhost:8080/";
+            window.location = domain;
         }
     });
 }
@@ -111,7 +111,7 @@ function getZeitpunktAsLong(datumMitUhrzeit) {
     return new Date(parts[2] + "/" + parts[1] + "/" + parts[0] + " " + parts[3] + ":" + parts[4]).getTime();
 }
 
-function getHumanTimeByDateObject(dateObject) {
+/*function getHumanTimeByDateObject(dateObject) {
     if (dateObject.getDay() != NaN || dateObject.getMonth() != NaN || dateObject.getYear() != NaN) {
         var tag = dateObject.getDate();
         if(tag < 10) {
@@ -380,4 +380,4 @@ function profilAnsichtBeenden(activityId){
     } else {
         window.location.href = document.referrer;
     }
-}
+}*/

@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -34,8 +35,6 @@ public class Benutzer implements Serializable {
     //orphanRemoval = true: wenn Benutzer gelöscht wird, wird auch Token gelöscht
     @OneToOne(mappedBy = "benutzer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Token token;
-
-
 
     //TODO: Berechtigungslevel?
 

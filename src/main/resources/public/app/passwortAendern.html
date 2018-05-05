@@ -27,6 +27,7 @@
     <script src="../js/jsencrypt.min.js"></script>
 
     <script src="../js/tools.js"></script>
+    <script src="../js/benutzerVerwalten.js"></script>
 
 </head>
 
@@ -62,7 +63,16 @@
                 <div class="bar3"></div>
             </div>
             <!-- Ende Menü -->
-            <h1>Startseite</h1>
+            <div class="form-signin">
+                <ul id="errors" class="alert text-center"></ul>
+                <h2 class="form-signin-heading text-center">Passwort ändern</h2>
+                <label for="neuesPasswort" class="sr-only">Neues Passwort</label>
+                <input type="password" id="neuesPasswort" class="form-control" placeholder="Neues Passwort" required onkeyup="if (event.keyCode === 13)passwortAendern()">
+                <label for="neuesPasswort2" class="sr-only">Neues Passwort wiederholen</label>
+                <input type="password" id="neuesPasswort2" class="form-control" placeholder="Neues Passwort wiederholen" required onkeyup="if (event.keyCode === 13)passwortAendern()">
+                <br/>
+                <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="passwortAendern()">Passwort ändern</button>
+            </div>
         </div>
     </div>
 </div>

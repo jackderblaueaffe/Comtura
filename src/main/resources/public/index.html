@@ -17,11 +17,18 @@
     <link href="css/simple-sidebar.css" rel="stylesheet">
     <link href="css/index.css" rel="stylesheet">
 
+    <script>
+        var domain = "http://192.168.2.100:8080";
+    </script>
 
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+    <script src="js/jsencrypt.min.js"></script>
+
     <script src="js/tools.js"></script>
     <script src="js/login.js"></script>
+
 
 </head>
 
@@ -57,9 +64,11 @@
                 <ul id="errors" class="alert text-center"></ul>
                 <h2 class="form-signin-heading text-center">Login</h2>
                 <label for="benutzername" class="sr-only">Benutzername</label>
-                <input type="text" id="benutzername" class="form-control" placeholder="Benutzername" required autofocus>
+                <input type="text" id="benutzername" class="form-control" placeholder="Benutzername" required autofocus
+                       onkeyup="if (event.keyCode === 13)login()">
                 <label for="passwort" class="sr-only">Password</label>
-                <input type="password" id="passwort" class="form-control" placeholder="Passwort" required>
+                <input type="password" id="passwort" class="form-control" placeholder="Passwort" required
+                       onkeyup="if (event.keyCode === 13)login()">
                 <br/>
                 <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="login()">Anmelden</button>
             </div>
@@ -70,14 +79,7 @@
 
 </div>
 <!-- /#wrapper -->
-<script>
-    $("#toggleSidebar").click(function (e) {
-        var x = document.getElementById("toggleSidebar");
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-        x.classList.toggle("change");
-    });
-</script>
+<script src="js/sidebar.js"></script>
 </body>
 
 </html>

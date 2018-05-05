@@ -18,7 +18,7 @@ public class TokenGenerator {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //token.setEncryptionKey(key);
+        token.setEncryptionKey(key);
         token.setAblaufdatum(System.currentTimeMillis() + EXPIRATION_TIME);
         token.setBenutzer(benutzer);
 
