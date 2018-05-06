@@ -39,6 +39,7 @@ public class Benutzer implements Serializable {
     @OneToOne(mappedBy = "benutzer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Token token;
 
-    //TODO: Berechtigungslevel?
+    @ManyToOne
+    private Berechtigungslevel berechtigungslevel;
 
 }

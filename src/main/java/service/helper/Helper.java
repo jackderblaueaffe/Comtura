@@ -1,11 +1,16 @@
 package service.helper;
 
+import repository.BerechtigungslevelRepository;
 import repository.TokenRepository;
 import repository.dao.Benutzer;
+import repository.dao.Berechtigungslevel;
 import repository.dao.Token;
+import repository.enums.EnumBerechtigungslevel;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Helper {
 
@@ -46,6 +51,35 @@ public class Helper {
         Date datum = new Date(zeitstempel);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         return sdf.format(datum);
+    }
+
+    /**
+     * Fügt alle noch nicht vorhandenen Berechtigungslevel in die Datenbank ein.
+     *
+     * @param berechtigungslevelRepository wird benötigt, da ansonsten Zugriff in Helper möglich
+     */
+    public static void insertBerechtigungslevelIfNotExist(BerechtigungslevelRepository berechtigungslevelRepository) {
+        List<Berechtigungslevel> alleBerechrichtungslevel = berechtigungslevelRepository.findAllBy();
+        List<String> alleBeschreibungen = new ArrayList<>();
+        for (Berechtigungslevel berechtigungslevel : alleBerechrichtungslevel) {
+            alleBeschreibungen.add(berechtigungslevel.getBeschreibung().name());
+        }
+
+        if (!alleBeschreibungen.contains(EnumBerechtigungslevel.KUNDE.name())) {
+            Berechtigungslevel bl = new Berechtigungslevel();
+            bl.setBeschreibung(EnumBerechtigungslevel.KUNDE);
+            berechtigungslevelRepository.save(bl);
+        }
+        if (!alleBeschreibungen.contains(EnumBerechtigungslevel.MITARBEITER.name())) {
+            Berechtigungslevel bl = new Berechtigungslevel();
+            bl.setBeschreibung(EnumBerechtigungslevel.MITARBEITER);
+            berechtigungslevelRepository.save(bl);
+        }
+        if (!alleBeschreibungen.contains(EnumBerechtigungslevel.ADMINISTRATOR.name())) {
+            Berechtigungslevel bl = new Berechtigungslevel();
+            bl.setBeschreibung(EnumBerechtigungslevel.ADMINISTRATOR);
+            berechtigungslevelRepository.save(bl);
+        }
     }
 
 }

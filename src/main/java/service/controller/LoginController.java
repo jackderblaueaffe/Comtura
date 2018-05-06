@@ -1,7 +1,9 @@
 package service.controller;
 
 import api.errors.Fehlermeldung;
+import api.errors.ValidationErrorMessages;
 import api.request.LoginRequest;
+import api.request.RegistrierenRequest;
 import api.request.TokenRequest;
 import api.response.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,17 +11,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import repository.BenutzerRepository;
+import repository.BerechtigungslevelRepository;
 import repository.TokenRepository;
 import repository.dao.Benutzer;
+import repository.dao.Berechtigungslevel;
 import repository.dao.Token;
+import repository.enums.EnumBerechtigungslevel;
 import repository.validation.EntityValidator;
 import service.helper.Helper;
 import service.security.Encryption;
 import service.security.TokenGenerator;
 
+import javax.validation.ConstraintViolationException;
 import java.security.PublicKey;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/service/login")
@@ -30,6 +37,9 @@ public class LoginController {
 
     @Autowired
     TokenRepository tokenRepository;
+
+    @Autowired
+    BerechtigungslevelRepository berechtigungslevelRepository;
 
     @Autowired
     EntityValidator validator;
@@ -96,6 +106,56 @@ public class LoginController {
     @GetMapping("/getPublicKey")
     public ResponseEntity<PublicKey> getPublicKey() {
         return new ResponseEntity(encryption.getRSAPublicKey(), HttpStatus.OK);
+    }
+
+    @PostMapping("/registrieren")
+    public ResponseEntity registrieren(@RequestBody RegistrierenRequest request) {
+        List<String> errors = validator.validate(request);
+        Benutzer benutzer = benutzerRepository.findBenutzerByBenutzername(request.getBenutzername());
+        if (benutzer != null) { //Benutzername schon vorhanden -> Fehlermeldung
+            errors.add("Der Benutzername ist bereits vergeben.");
+            //return new ResponseEntity(new ValidationErrorMessages(errors), HttpStatus.BAD_REQUEST);
+        }
+        String passwort1, passwort2;
+        try {
+            passwort1 = new String(encryption.decryptRSA(Base64.getDecoder().decode(request.getPasswort1())));
+            passwort2 = new String(encryption.decryptRSA(Base64.getDecoder().decode(request.getPasswort2())));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(new ValidationErrorMessages(errors), HttpStatus.BAD_REQUEST);
+        }
+        if (!passwort1.equals(passwort2)) {
+            errors.add("Die eingegeben Passwörter stimmen nicht überein.");
+            //return new ResponseEntity(new ValidationErrorMessages(errors), HttpStatus.BAD_REQUEST);
+        } else {
+            if (!Helper.checkPasswortPolicy(passwort1)) {
+                errors.add("Das Passwort entspricht nicht den Passwortrichtlinien. (mindestens 5 Zeichen)");
+                //return new ResponseEntity(new ValidationErrorMessages(errors), HttpStatus.BAD_REQUEST);
+            }
+        }
+        if (errors.size() > 0) {
+            return new ResponseEntity(new ValidationErrorMessages(errors), HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            benutzer = new Benutzer();
+            Helper.insertBerechtigungslevelIfNotExist(berechtigungslevelRepository); //prüfen, ob alle Berechtigungslevel, in der Datenbank vorhanden sind, wenn nicht: einfügen
+            Berechtigungslevel bl = berechtigungslevelRepository.findBerechtigungslevelByBeschreibung(EnumBerechtigungslevel.MITARBEITER); //jeder neu registrierte ist standardmäßig Mitarbeiter
+            benutzer.setBerechtigungslevel(bl);
+
+            benutzer.setBenutzername(request.getBenutzername());
+            benutzer.setPasswort(Encryption.SHAencrypt(passwort1));
+            benutzer.setGesperrtBis(0L);
+            benutzer.setFehlgeschlageneLoginversuche(0);
+            benutzer.setToken(TokenGenerator.generateToken(benutzer));
+
+            benutzerRepository.save(benutzer);
+        } catch (ConstraintViolationException e) {
+            errors.addAll(validator.createErrorListByConstraintViolationException(e));
+            return new ResponseEntity<>(new ValidationErrorMessages(errors), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(new TokenResponse(benutzer.getToken().getTokenContent(), benutzer.getToken().getAblaufdatum(), benutzer.getId()), HttpStatus.OK);
+
     }
 
 }

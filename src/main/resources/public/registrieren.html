@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Comtura - Login</title>
+    <title>Comtura - Registrieren</title>
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -27,24 +27,22 @@
     <script src="js/jsencrypt.min.js"></script>
 
     <script src="js/tools.js"></script>
-    <script src="js/login.js"></script>
-
-
+    <script src="js/registrieren.js"></script>
 </head>
 
-<body onload="autologin()">
+<body>
 
 <div id="wrapper">
     <!-- Sidebar -->
     <div id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
-                <a href="#">
+                <a href="index.html">
                     Comtura
                 </a>
             </li>
             <li>
-                <a href="registrieren.html">Registrieren</a>
+                <a href="#">Registrieren</a>
             </li>
         </ul>
     </div>
@@ -62,15 +60,19 @@
             <!-- Ende Menü -->
             <div class="form-signin">
                 <ul id="errors" class="alert text-center"></ul>
-                <h2 class="form-signin-heading text-center">Login</h2>
+                <h2 class="form-signin-heading text-center">Registrierung</h2>
                 <label for="benutzername" class="sr-only">Benutzername</label>
                 <input type="text" id="benutzername" class="form-control" placeholder="Benutzername" required autofocus
-                       onkeyup="if (event.keyCode === 13)login()">
+                       onkeyup="if (event.keyCode === 13)registrieren()">
                 <label for="passwort" class="sr-only">Passwort</label>
                 <input type="password" id="passwort" class="form-control" placeholder="Passwort" required
-                       onkeyup="if (event.keyCode === 13)login()">
+                       onkeyup="if (event.keyCode === 13)registrieren()">
+                <label for="passwort" class="sr-only">Passwort wiederholen</label>
+                <input type="password" id="passwort2" class="form-control" placeholder="Passwort wiederholen" required
+                       onkeyup="if (event.keyCode === 13)registrieren()">
                 <br/>
-                <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="login()">Anmelden</button>
+                <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="registrieren()">Registrieren
+                </button>
             </div>
         </div>
     </div>
